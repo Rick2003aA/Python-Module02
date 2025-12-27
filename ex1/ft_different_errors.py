@@ -1,4 +1,8 @@
 def garden_operations(mode):
+    """
+    mode -> str
+    modeに入ってきた引数によって対応するエラーを引き起こす
+    """
     if mode == "value":
         int("abc")
     elif mode == "zero":
@@ -14,6 +18,11 @@ def garden_operations(mode):
 
 
 def test_error_types():
+    """
+    tryでgarden_operationsに引き起こすべきエラーの種類を渡す
+    garden_operationsで起こしたエラーをexceptで拾う
+    拾ったエラーに応じて表示するメッセージを変える
+    """
     error_list = ["value", "zero", "file", "key"]
     for mode in error_list:
         try:
@@ -39,5 +48,10 @@ def test_error_types():
     print("All error types tested successfully!")
 
 
-print("=== Garden Error Types Demo ===")
-test_error_types()
+def main():
+    print("=== Garden Error Types Demo ===")
+    test_error_types()
+
+
+if __name__ == "__main__":
+    main()

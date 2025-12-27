@@ -1,20 +1,38 @@
 class GardenError(Exception):
+    """
+    Exceptionを継承し、エラーとして機能させる
+    """
     pass
 
 
 class PlantError(GardenError):
+    """
+    GardenErrorを継承
+    """
     pass
 
 
 class WaterError(GardenError):
+    """
+    GardenErrorを継承
+    """
     pass
 
 
 class SunLightError(GardenError):
+    """
+    GardenErrorを継承
+    """
     pass
 
 
 class GardenManager:
+    """
+    エラーケース：
+    - nameが""の時
+    - water_levelが1未満、10より大きい時
+    - sunlight_hoursが2未満、12より大きい時
+    """
     def __init__(self):
         self.plants = {}
 
@@ -39,6 +57,9 @@ class GardenManager:
             raise PlantError("Error: Plant name cannot be empty!")
         if name not in self.plants:
             raise PlantError(f"Plant '{name}' does not exist!")
+        if self.plants[name]['water'] < 1:
+            raise WaterError(f"Error: Water level {self.plants[name]['water']}"
+                             f"is too low (min 1)")
         if self.plants[name]['water'] > 10:
             raise WaterError(f"Error: Water level {self.plants[name]['water']}"
                              f" is too high (max 10)")
@@ -46,19 +67,56 @@ class GardenManager:
             raise SunLightError(f"Error: Sunlight hours"
                                 f" {self.plants[name]['sunlight']}"
                                 f" is too low (min 2)")
+        if self.plants[name]['sunlight'] > 12:
+            raise SunLightError(f"Error: Sunlight hours"
+                                f" {self.plants[name]['sunlight']}"
+                                f" is too high (max 12)")
+        return (f"{name}: healthy (water: {self.plants[name]['water']}, "
+                f"sun: {self.plants[name]['sunlight']})")
 
 
-print("=== Garden Management System ===")
-garden = GardenManager()
-try:
-    garden.add_plants("Tomato", 1, 1)
-    garden.add_plants("Banana", 1, 1)
-except GardenError as e:
-    print(e)
+def main():
+    print("=== Garden Management System ===")
+    print()
+    garden = GardenManager()
+    print("Adding plants to garden...")
+    try:
+        garden.add_plants("Tomato", 5, 8)
+    except GardenError as e:
+        print(e)
 
-garden.water_plants()
-try:
-    garden.check_plant_health("Tomato")
-except GardenError as e:
-    print("Caught GardenError:", e)
-    print("System recovered and continuing...")
+    try:
+        garden.add_plants("lettuce", 1, 1)
+    except GardenError as e:
+        print(e)
+
+    # === Error case ===
+    try:
+        garden.add_plants("", 1, 1)
+    except GardenError as e:
+        print(e)
+
+    print()
+
+    print("Watering plants...")
+    garden.water_plants()
+    print()
+
+    try:
+        result = garden.check_plant_health("Tomato")
+        print(result)
+    except GardenError as e:
+        print("Caught GardenError:", e)
+        print("System recovered and continuing...")
+    try:
+        result = garden.check_plant_health("lettuce")
+        print(result)
+    except GardenError as e:
+        print("Caught GardenError:", e)
+        print("System recovered and continuing...")
+    print()
+    print("Garden management system test complete!")
+
+
+if __name__ == "__main__":
+    main()
